@@ -298,7 +298,7 @@ export default function Component() {
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-2xl font-bold mr-4">
                     1
                   </div>
-                  <p className="text-xl">前往 <a href="https://dash.freeserver.tw" className="text-orange-300 underline">dash.freeserver.tw</a> 註冊</p>
+                  <p className="text-xl">前往 <a href="https://dash.freeserver.tw">dash.freeserver.tw</a> 註冊</p>
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
@@ -348,11 +348,11 @@ export default function Component() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="flex justify-center space-x-6"
             >
-              <Button className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-full text-lg flex items-center">
+              <Button onClick={() => window.open("https://discord.gg/k5GgFFxN2Q", "_blank")} className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-full text-lg flex items-center">
                 <img src="/discord.svg" alt="Discord Logo" className="h-6 w-6 mr-2" />
                 加入 Discord
               </Button>
-              <Button className="bg-zinc-700 hover:bg-zinc-600 text-white px-8 py-3 rounded-full text-lg flex items-center">
+              <Button onClick={() => window.open("https://github.com/FreeServer-v3")} className="bg-zinc-700 hover:bg-zinc-600 text-white px-8 py-3 rounded-full text-lg flex items-center">
                 <Github className="mr-2 h-6 w-6" />
                 查看 GitHub
               </Button>

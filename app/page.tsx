@@ -2,14 +2,16 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from "@/components/ui/button"
-import { Github, Menu, X, Server, Code, Users } from 'lucide-react'
+import { Github, Menu, X, Server, Code, Users, CircleDollarSign, HandCoins } from 'lucide-react'
 import Link from 'next/link'
 import Particles from "react-particles";
 import { loadFull } from "tsparticles";
+import { useRouter } from "next/navigation";
 
 export default function Component() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('hero')
+  const router = useRouter();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
 
@@ -243,6 +245,27 @@ export default function Component() {
                 <p className="text-lg">我們於台灣的是方宏鼎機房、香港的 Mega Gateway 機房皆設有節點，使用高效能的 EPYC 7002 / Intel Xeon Gold CPU，提供穩定的服務。</p>
               </motion.div>
             </div>
+            <div className="py-10" />
+            <div className="container mx-auto text-center items-center">
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              >
+                <h3 className="text-2xl font-semibold mb-4">贊助我們!</h3>
+                <p className="text-lg">我們的服務基本都是免費的，如果你想支持我們，可以考慮贊助我們!</p><br/>
+                <div className="flex justify-center space-x-6">
+                  <Button onClick={() => router.push("/donate")} className="bg-yellow-600 hover:bg-yellow-500 text-white px-8 py-3 rounded-full text-lg flex items-center">
+                    <CircleDollarSign className="mr-2 h-6 w-6" />
+                    贊助我們!
+                  </Button>
+                  <Button onClick={() => router.push("/sponsors")} className="bg-zinc-700 hover:bg-zinc-600 text-white px-8 py-3 rounded-full text-lg flex items-center">
+                    <HandCoins className="mr-2 h-6 w-6" />
+                    贊助者名單
+                  </Button>
+                </div>
+              </motion.div>
+            </div>
           </div>
         </section>
 
@@ -427,7 +450,7 @@ export default function Component() {
             <div className="w-full md:w-1/3 mb-8 md:mb-0">
               <h3 className="text-xl font-semibold mb-4">快速連結</h3>
               <ul className="space-y-2">
-                <li><Link href="/sponsor" className="text-zinc-400 hover:text-orange-500 transition-colors">贊助我們</Link></li>
+                <li><Link href="/donate" className="text-zinc-400 hover:text-orange-500 transition-colors">贊助我們</Link></li>
                 <li><Link href="/terms" className="text-zinc-400 hover:text-orange-500 transition-colors">服務條款</Link></li>
                 <li><Link href="/privacy" className="text-zinc-400 hover:text-orange-500 transition-colors">隱私政策</Link></li>
               </ul>

@@ -10,7 +10,7 @@ const sponsors = [
     { id: 1, name: 'NAF 商城', tier: 'Gold', logo: '/assets/sponsors/nafstore.webp', link: 'https://nafstore.net' },
     { id: 2, name: '四零四網路資訊企業社', tier: 'Gold', logo: '/assets/sponsors/404-network-infor.webp', link: 'https://host.moda/' },
     { id: 3, name: 'CRE0809', tier: 'Gold', logo: '/assets/sponsors/cre0809.webp', link: 'https://www.cre0809.com/' },
-    { id: 4, name: 'Nelson' ,tier: 'Silver', logo: '/assets/sponsors/nelsonGX_head.png', link: 'https://www.nelson.tw/' },
+    { id: 4, name: 'Nelson' ,tier: 'Silver', logo: '/assets/sponsors/nelsonGX_head.png', link: 'https://nelsongx.com/' },
     { id: 5, name: 'CheapServer', tier: 'Special', logo: '/assets/sponsors/cheapserver-white.png', link: 'https://cheapserver.tw/' },
 ];
 

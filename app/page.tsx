@@ -205,14 +205,20 @@ return (
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
             >
-            <motion.button
-                className="bg-orange-500 hover:bg-orange-600 text-white text-lg px-8 py-3 rounded-full"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => scrollTo('開始使用')}
-            >
-            創建伺服器
-            </motion.button>
+            <div className="flex space-x-6 justify-center">
+                <motion.button
+                    className="bg-orange-500 hover:bg-orange-600 text-white text-lg px-8 py-3 rounded-full"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => scrollTo('開始使用')}
+                >
+                創建伺服器
+                </motion.button>
+                <motion.button onClick={() => window.open("https://discord.gg/invite/freeserver-mian-fei-si-fu-v3-1161357736819302500", "_blank")} className="bg-indigo-600 hover:bg-indigo-700 text-white text-lg px-8 py-3 rounded-full flex items-center">
+                    <img src="/assets/discord.svg" alt="Discord Logo" className="h-6 w-6 mr-2" />
+                    加入 Discord
+                </motion.button>
+            </div>
 
             </motion.div>
         </div>
@@ -372,7 +378,7 @@ return (
                 transition={{ duration: 0.8, delay: 0.4 }}
                 className="flex justify-center space-x-6"
             >
-                <Button onClick={() => window.open("https://discord.gg/k5GgFFxN2Q", "_blank")} className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-full text-lg flex items-center">
+                <Button onClick={() => window.open("https://discord.gg/invite/freeserver-mian-fei-si-fu-v3-1161357736819302500", "_blank")} className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-full text-lg flex items-center">
                     <img src="/assets/discord.svg" alt="Discord Logo" className="h-6 w-6 mr-2" />
                     加入 Discord
                 </Button>

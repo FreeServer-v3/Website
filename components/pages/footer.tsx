@@ -14,7 +14,7 @@ export default function Footer() {
               <h3 className="text-xl font-semibold mb-4">快速連結</h3>
               <ul className="space-y-2">
                 <li><Link href="/donate" className="text-zinc-400 hover:text-orange-500 transition-colors">贊助我們</Link></li>
-                <li><Link href="/terms" className="text-zinc-400 hover:text-orange-500 transition-colors">服務條款</Link></li>
+                <li><Link href="/tos" className="text-zinc-400 hover:text-orange-500 transition-colors">服務條款</Link></li>
                 <li><Link href="/privacy" className="text-zinc-400 hover:text-orange-500 transition-colors">隱私政策</Link></li>
               </ul>
             </div>

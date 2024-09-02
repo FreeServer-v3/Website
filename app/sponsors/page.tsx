@@ -2,83 +2,133 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Gift } from 'lucide-react';
+import { Gift, Star } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import Footer from '@/components/pages/footer';
 
-// Mock data for sponsors
 const sponsors = [
-  { id: 1, name: 'TechCorp', tier: 'Gold', logo: '/api/placeholder/200/100' },
-  { id: 2, name: 'InnoSystems', tier: 'Silver', logo: '/api/placeholder/200/100' },
-  { id: 3, name: 'DevWorks', tier: 'Bronze', logo: '/api/placeholder/200/100' },
-  { id: 4, name: 'CloudNine', tier: 'Gold', logo: '/api/placeholder/200/100' },
-  { id: 5, name: 'ByteBuddies', tier: 'Silver', logo: '/api/placeholder/200/100' },
-  { id: 6, name: 'CodeCrafters', tier: 'Bronze', logo: '/api/placeholder/200/100' },
+    { id: 1, name: 'NAF 商城', tier: 'Gold', logo: '/assets/sponsors/nafstore.webp', link: 'https://nafstore.net' },
+    { id: 2, name: '四零四網路資訊企業社', tier: 'Gold', logo: '/assets/sponsors/404-network-infor.webp', link: 'https://host.moda/' },
+    { id: 3, name: 'CRE0809', tier: 'Gold', logo: '/assets/sponsors/cre0809.webp', link: 'https://www.cre0809.com/' },
+    { id: 4, name: 'Nelson' ,tier: 'Silver', logo: '/assets/sponsors/nelsonGX_head.png', link: 'https://www.nelson.tw/' },
+    { id: 5, name: 'CheapServer', tier: 'Special', logo: '/assets/sponsors/cheapserver-white.png', link: 'https://cheapserver.tw/' },
 ];
 
-const SponsorsListPage = () => {
-  return (
-    <div className="bg-[#121214] text-zinc-100 min-h-screen">
-      <header className="fixed top-0 left-0 right-0 bg-[#1B1B1F] z-10">
-        <nav className="container mx-auto py-4">
-          {/* Add navigation items here */}
-        </nav>
-      </header>
+const tierColors: { [key: string]: string } = {
+    Gold: 'text-yellow-400',
+    Silver: 'text-gray-300',
+    Bronze: 'text-orange-600',
+    Special: 'text-blue-300',
+};
 
-      <main className="container mx-auto pt-20 pb-20">
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-4xl md:text-7xl font-bold mb-4">Our Sponsors</h1>
-          <p className="text-xl mb-8">We're grateful for the support of these amazing organizations</p>
-          <Button
-            className="bg-orange-500 hover:bg-orange-600 text-white text-lg px-8 py-3 rounded-full"
-          >
-            Become a Sponsor
-          </Button>
-        </motion.section>
+const SponsorCard = ({ sponsor, index }: { sponsor: any, index: number }) => (
+    <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: index * 0.1 }}
+        className="bg-[#1B1B1F] p-6 rounded-lg shadow-lg hover:shadow-orange-500/20 transition-shadow duration-300"
+        onClick={() => window.open(sponsor.link, '_blank')}
+        style={{ cursor: 'pointer' }}
+    >
+        <img src={sponsor.logo} alt={`${sponsor.name} logo`} className="w-full h-32 object-contain mb-4" />
+        <h3 className="text-2xl font-semibold mb-2 text-center">{sponsor.name}</h3>
+        <p className={`${tierColors[sponsor.tier]} font-medium text-center`}>{sponsor.tier === 'Gold' ? '黃金' : sponsor.tier === 'Silver' ? '白銀' : sponsor.tier === 'Brozne' ? '青銅' : '特別'}贊助者</p>
+    </motion.div>
+);
 
+
+const TierSection = ({ tier, sponsors }: { tier: string, sponsors: any[] }) => (
+    <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="mb-16"
+    >
+        <h2 className={`text-4xl font-bold mb-8 flex items-center justify-center ${tierColors[tier]}`}>
+            <Star className="mr-2" /> {tier === 'Gold' ? '黃金' : tier === 'Silver' ? '白銀' : tier === 'Bronze' ? '青銅' : '特別'}贊助者
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {sponsors.map((sponsor, index) => (
-            <motion.div
-              key={sponsor.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-[#1B1B1F] p-6 rounded-lg shadow-lg hover:shadow-orange-500/20 transition-shadow duration-300"
+            {sponsors.map((sponsor, index) => (
+                <SponsorCard key={sponsor.id} sponsor={sponsor} index={index} />
+            ))}
+        </div>
+    </motion.section>
+);
+
+const SponsorsListPage = () => {
+    const sponsorsByTier = sponsors.reduce((acc: { [key: string]: any[] }, sponsor) => {
+        if (!acc[sponsor.tier]) {
+            acc[sponsor.tier] = [];
+        }
+        acc[sponsor.tier].push(sponsor);
+        return acc;
+    }, {});
+
+    const router = useRouter();
+
+    const tiers = ['Gold', 'Silver', 'Bronze', 'Special'];
+
+    return (
+        <div className="bg-[#121214] text-zinc-100 min-h-screen">
+        <header className="fixed top-0 left-0 right-0 bg-[#1B1B1F]/50 backdrop-blur-md z-10">
+            <nav className="container mx-auto py-4">
+                <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="flex items-center space-x-4"
+                >
+                    <img src="/assets/freeserverv3.png" alt="FreeServer Logo" className="h-8 w-8" />
+                    <a href="/" className="text-xl font-bold">FreeServer v3</a>
+                </motion.div>
+            </nav>
+        </header>
+
+        <main className="container mx-auto pt-20 pb-20">
+            <motion.section
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="text-center mb-16"
             >
-              <img src={sponsor.logo} alt={`${sponsor.name} logo`} className="w-full h-32 object-contain mb-4" />
-              <h3 className="text-2xl font-semibold mb-2">{sponsor.name}</h3>
-              <p className="text-orange-500 font-medium">{sponsor.tier} Sponsor</p>
-            </motion.div>
-          ))}
-        </div>
+                <div className="py-4" />
+                <h1 className="text-4xl md:text-7xl font-bold mb-4">贊助者名單</h1>
+                <p className="text-xl mb-8">歡迎聯絡我們成為贊助者 {'<'}3</p>
+                <Button
+                    className="bg-orange-500 hover:bg-orange-600 text-white text-lg px-8 py-3 rounded-full"
+                    onClick={() => router.push('/donate')}
+                >
+                    贊助我們!
+                </Button>
+            </motion.section>
 
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mt-20"
-        >
-          <h2 className="text-4xl font-bold mb-4">Want to Support FreeServer?</h2>
-          <p className="text-xl mb-8">Join our community of sponsors and help shape the future of FreeServer</p>
-          <Button
-            className="bg-orange-500 hover:bg-orange-600 text-white text-lg px-8 py-3 rounded-full"
-          >
-            <Gift className="mr-2 h-5 w-5" />
-            Sponsor Us
-          </Button>
-        </motion.section>
-      </main>
+            {tiers.map(tier => (
+                sponsorsByTier[tier] && sponsorsByTier[tier].length > 0 && (
+                    <TierSection key={tier} tier={tier} sponsors={sponsorsByTier[tier]} />
+                )
+            ))}
 
-      <footer className="bg-[#1B1B1F] py-8">
-        <div className="container mx-auto text-center">
-          <p>&copy; 2024 FreeServer. All rights reserved.</p>
+            <motion.section
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="text-center mt-20"
+            >
+                <h2 className="text-4xl font-bold mb-4">想要讓我們活更久嗎?</h2>
+                <p className="text-xl mb-8">加入贊助者名單來幫助我們!</p>
+                <Button
+                    className="bg-orange-500 hover:bg-orange-600 text-white text-lg px-8 py-3 rounded-full"
+                    onClick={() => router.push('/donate')}
+                >
+                    <Gift className="mr-2 h-5 w-5" />
+                    贊助我們
+                </Button>
+            </motion.section>
+        </main>
+
+        <Footer />
         </div>
-      </footer>
-    </div>
-  );
+    );
 };
 
 export default SponsorsListPage;

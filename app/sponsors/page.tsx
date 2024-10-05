@@ -6,14 +6,15 @@ import { Gift, Star, AdCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Footer from '@/components/pages/footer';
 
-interface Ad {
+interface Sponsor {
     id: number;
     name: string;
+    tier: string;
     logo: string;
     link: string;
 }
 
-const sponsors = [
+const initialSponsors: Sponsor[] = [
     { id: 1, name: 'NAF 商城', tier: 'Gold', logo: '/assets/sponsors/nafstore.webp', link: 'https://nafstore.net' },
     { id: 2, name: '四零四網路資訊企業社', tier: 'Gold', logo: '/assets/sponsors/404-network-infor.webp', link: 'https://host.moda/' },
     { id: 3, name: 'CRE0809', tier: 'Gold', logo: '/assets/sponsors/cre0809.webp', link: 'https://www.cre0809.com/' },
@@ -28,18 +29,25 @@ const tierColors: { [key: string]: string } = {
     Special: 'text-blue-300',
 };
 
-const SponsorCard = ({ sponsor, index }: { sponsor: any, index: number }) => (
+const SponsorCard = ({ sponsor, index }: { sponsor: Sponsor, index: number }) => (
     <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: index * 0.1 }}
-        className="bg-[#1B1B1F] p-6 rounded-lg shadow-lg hover:shadow-orange-500/20 transition-shadow duration-300"
+        className={`bg-[#1B1B1F] p-6 rounded-lg shadow-lg hover:shadow-${sponsor.tier === 'Ad' ? 'blue' : 'orange'}-500/20 transition-shadow duration-300`}
         onClick={() => window.open(sponsor.link, '_blank')}
         style={{ cursor: 'pointer' }}
     >
         <img src={sponsor.logo} alt={`${sponsor.name} logo`} className="w-full h-32 object-contain mb-4" />
         <h3 className="text-2xl font-semibold mb-2 text-center">{sponsor.name}</h3>
-        <p className={`${tierColors[sponsor.tier]} font-medium text-center`}>{sponsor.tier === 'Gold' ? '黃金' : sponsor.tier === 'Silver' ? '白銀' : sponsor.tier === 'Brozne' ? '青銅' : '特別'}贊助者</p>
+        {sponsor.tier !== 'Ad' && (
+            <p className={`${tierColors[sponsor.tier]} font-medium text-center`}>
+                {sponsor.tier === 'Gold' ? '黃金' : sponsor.tier === 'Silver' ? '白銀' : sponsor.tier === 'Bronze' ? '青銅' : '特別'}贊助者
+            </p>
+        )}
+        {sponsor.tier === 'Ad' && (
+            <p className="text-blue-400 font-medium text-center">廣告贊助商</p>
+        )}
     </motion.div>
 );
 
@@ -63,14 +71,18 @@ const TierSection = ({ tier, sponsors }: { tier: string, sponsors: any[] }) => (
 );
 
 const SponsorsListPage = () => {
-    const [ads, setAds] = useState<Ad[]>([]);
+    const [sponsors, setSponsors] = useState<Sponsor[]>(initialSponsors);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         fetch('https://cdn.freeserver.tw/ad/list.json')
             .then(response => response.json())
             .then(data => {
-                setAds(data);
+                const adSponsors = data.map((ad: any) => ({
+                    ...ad,
+                    tier: 'Ad'
+                }));
+                setSponsors([...initialSponsors, ...adSponsors]);
                 setIsLoading(false);
             })
             .catch(error => {
@@ -79,7 +91,7 @@ const SponsorsListPage = () => {
             });
     }, []);
 
-    const sponsorsByTier = sponsors.reduce((acc: { [key: string]: any[] }, sponsor) => {
+    const sponsorsByTier = sponsors.reduce((acc: { [key: string]: Sponsor[] }, sponsor) => {
         if (!acc[sponsor.tier]) {
             acc[sponsor.tier] = [];
         }
@@ -89,7 +101,7 @@ const SponsorsListPage = () => {
 
     const router = useRouter();
 
-    const tiers = ['Gold', 'Silver', 'Bronze', 'Special'];
+    const tiers = ['Gold', 'Silver', 'Bronze', 'Special', 'Ad'];
 
     return (
         <div className="bg-[#121214] text-zinc-100 min-h-screen">
@@ -148,39 +160,20 @@ const SponsorsListPage = () => {
                     </Button>
                 </motion.section>
 
-                <motion.section
-                    id="ADSponsor"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8 }}
-                    className="mt-20"
-                >
-                    <h2 className="text-4xl font-bold mb-8 flex items-center justify-center text-blue-400">
-                        <AdCircle className="mr-2" /> 廣告贊助商
-                    </h2>
-                    {isLoading ? (
-                        <p className="text-center">Loading...</p>
-                    ) : ads && ads.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {ads.map((ad) => (
-                                <motion.div
-                                    key={ad.id}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.5 }}
-                                    className="bg-[#1B1B1F] p-6 rounded-lg shadow-lg hover:shadow-blue-500/20 transition-shadow duration-300"
-                                    onClick={() => window.open(ad.link, '_blank')}
-                                    style={{ cursor: 'pointer' }}
-                                >
-                                    <img src={ad.logo} alt={`${ad.name} logo`} className="w-full h-32 object-contain mb-4" />
-                                    <h3 className="text-2xl font-semibold mb-2 text-center">{ad.name}</h3>
-                                </motion.div>
-                            ))}
-                        </div>
-                    ) : (
-                        <p className="text-center">No ads available at the moment.</p>
-                    )}
-                </motion.section>
+                {isLoading ? (
+                    <p className="text-center">Loading sponsors...</p>
+                ) : (
+                    <>
+                        {tiers.map(tier => (
+                            sponsorsByTier[tier] && sponsorsByTier[tier].length > 0 && (
+                                <TierSection key={tier} tier={tier} sponsors={sponsorsByTier[tier]} />
+                            )
+                        ))}
+                        {sponsorsByTier['Ad'] && sponsorsByTier['Ad'].length > 0 && (
+                            <TierSection key="Ad" tier="Ad" sponsors={sponsorsByTier['Ad']} />
+                        )}
+                    </>
+                )}
             </main>
 
             <Footer />

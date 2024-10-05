@@ -137,11 +137,17 @@ const SponsorsListPage = () => {
                     </Button>
                 </motion.section>
 
-                {tiers.map(tier => (
-                    sponsorsByTier[tier] && sponsorsByTier[tier].length > 0 && (
-                        <TierSection key={tier} tier={tier} sponsors={sponsorsByTier[tier]} />
-                    )
-                ))}
+                {isLoading ? (
+                    <p className="text-center">Loading sponsors...</p>
+                ) : (
+                    <>
+                        {tiers.map(tier => (
+                            sponsorsByTier[tier] && sponsorsByTier[tier].length > 0 && (
+                                <TierSection key={tier} tier={tier} sponsors={sponsorsByTier[tier]} />
+                            )
+                        ))}
+                    </>
+                )}
 
                 <motion.section
                     initial={{ opacity: 0, y: 20 }}
@@ -159,21 +165,6 @@ const SponsorsListPage = () => {
                         贊助我們
                     </Button>
                 </motion.section>
-
-                {isLoading ? (
-                    <p className="text-center">Loading sponsors...</p>
-                ) : (
-                    <>
-                        {tiers.map(tier => (
-                            sponsorsByTier[tier] && sponsorsByTier[tier].length > 0 && (
-                                <TierSection key={tier} tier={tier} sponsors={sponsorsByTier[tier]} />
-                            )
-                        ))}
-                        {sponsorsByTier['Ad'] && sponsorsByTier['Ad'].length > 0 && (
-                            <TierSection key="Ad" tier="Ad" sponsors={sponsorsByTier['Ad']} />
-                        )}
-                    </>
-                )}
             </main>
 
             <Footer />

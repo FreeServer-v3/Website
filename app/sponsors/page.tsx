@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Gift, Star, AdCircle } from 'lucide-react';
+import { Gift, Star} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Footer from '@/components/pages/footer';
 
@@ -23,7 +23,7 @@ interface Ad {
 
 const initialSponsors: Sponsor[] = [
     { id: 1, name: 'NAF 商城', tier: 'Gold', logo: '/assets/sponsors/nafstore.webp', link: 'https://nafstore.net' },
-    { id: 2, name: '四零四網路資訊企業社', tier: 'Gold', logo: '/assets/sponsors/404-network-infor.webp', link: 'https://host.moda/' },
+    { id: 2, name: '簡單資訊有限公司', tier: 'Gold', logo: '/assets/sponsors/404-network-infor.webp', link: 'https://portal.simple.taipei/' },
     { id: 3, name: 'CRE0809', tier: 'Gold', logo: '/assets/sponsors/cre0809.webp', link: 'https://www.cre0809.com/' },
     { id: 4, name: 'Nelson' ,tier: 'Silver', logo: '/assets/sponsors/nelsonGX_head.png', link: 'https://nelsongx.com/' },
     { id: 5, name: 'CheapServer', tier: 'Special', logo: '/assets/sponsors/cheapserver-white.png', link: 'https://cheapserver.tw/' },
@@ -34,6 +34,7 @@ const tierColors: { [key: string]: string } = {
     Silver: 'text-gray-300',
     Bronze: 'text-orange-600',
     Special: 'text-blue-300',
+    Ad: 'text-zinc-400'
 };
 
 const SponsorCard = ({ sponsor, index }: { sponsor: Sponsor, index: number }) => (
@@ -41,7 +42,7 @@ const SponsorCard = ({ sponsor, index }: { sponsor: Sponsor, index: number }) =>
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: index * 0.1 }}
-        className={`bg-[#1B1B1F] p-6 rounded-lg shadow-lg hover:shadow-${sponsor.tier === 'Ad' ? 'blue' : 'orange'}-500/20 transition-shadow duration-300`}
+        className={`bg-[#1B1B1F] p-6 rounded-lg shadow-lg hover:shadow-orange-500/30 transition-shadow duration-300`}
         onClick={() => window.open(sponsor.link, '_blank')}
         style={{ cursor: 'pointer' }}
     >
@@ -54,8 +55,7 @@ const SponsorCard = ({ sponsor, index }: { sponsor: Sponsor, index: number }) =>
         )}
         {sponsor.tier === 'Ad' && (
             <>
-                <p className="text-blue-400 font-medium text-center mb-2">廣告贊助商</p>
-                <p className="text-sm text-center">{(sponsor as Sponsor & Ad).text}</p>
+                <p className="text-zinc-400 font-medium text-center mb-2">廣告贊助商</p>
             </>
         )}
     </motion.div>
@@ -70,7 +70,7 @@ const TierSection = ({ tier, sponsors }: { tier: string, sponsors: any[] }) => (
         className="mb-16"
     >
         <h2 className={`text-4xl font-bold mb-8 flex items-center justify-center ${tierColors[tier]}`}>
-            <Star className="mr-2" /> {tier === 'Gold' ? '黃金' : tier === 'Silver' ? '白銀' : tier === 'Bronze' ? '青銅' : '特別'}贊助者
+            <Star className="mr-2" /> {tier === 'Gold' ? '黃金' : tier === 'Silver' ? '白銀' : tier === 'Bronze' ? '青銅' : tier === 'Ad' ? '廣告' : '特別'}贊助者
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {sponsors.map((sponsor, index) => (
@@ -152,7 +152,7 @@ const SponsorsListPage = () => {
                 </motion.section>
 
                 {isLoading ? (
-                    <p className="text-center">Loading sponsors...</p>
+                    <p className="text-center">載入中...</p>
                 ) : (
                     <>
                         {tiers.map(tier => (

@@ -1,10 +1,17 @@
 "use client"
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Gift, Star } from 'lucide-react';
+import { Gift, Star, AdCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Footer from '@/components/pages/footer';
+
+interface Ad {
+    id: number;
+    name: string;
+    logo: string;
+    link: string;
+}
 
 const sponsors = [
     { id: 1, name: 'NAF 商城', tier: 'Gold', logo: '/assets/sponsors/nafstore.webp', link: 'https://nafstore.net' },
@@ -56,6 +63,22 @@ const TierSection = ({ tier, sponsors }: { tier: string, sponsors: any[] }) => (
 );
 
 const SponsorsListPage = () => {
+    const [ads, setAds] = useState<Ad[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        fetch('https://cdn.freeserver.tw/ad/list.json')
+            .then(response => response.json())
+            .then(data => {
+                setAds(data);
+                setIsLoading(false);
+            })
+            .catch(error => {
+                console.error('Error fetching ads:', error);
+                setIsLoading(false);
+            });
+    }, []);
+
     const sponsorsByTier = sponsors.reduce((acc: { [key: string]: any[] }, sponsor) => {
         if (!acc[sponsor.tier]) {
             acc[sponsor.tier] = [];
@@ -70,63 +93,97 @@ const SponsorsListPage = () => {
 
     return (
         <div className="bg-[#121214] text-zinc-100 min-h-screen">
-        <header className="fixed top-0 left-0 right-0 bg-[#1B1B1F]/50 backdrop-blur-md z-10">
-            <nav className="container mx-auto py-4">
-                <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="flex items-center space-x-4"
+            <header className="fixed top-0 left-0 right-0 bg-[#1B1B1F]/50 backdrop-blur-md z-10">
+                <nav className="container mx-auto py-4">
+                    <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="flex items-center space-x-4"
+                    >
+                        <img src="/assets/freeserverv3.png" alt="FreeServer Logo" className="h-8 w-8" />
+                        <a href="/" className="text-xl font-bold">FreeServer v3</a>
+                    </motion.div>
+                </nav>
+            </header>
+
+            <main className="container mx-auto pt-20 pb-20">
+                <motion.section
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8 }}
+                    className="text-center mb-16"
                 >
-                    <img src="/assets/freeserverv3.png" alt="FreeServer Logo" className="h-8 w-8" />
-                    <a href="/" className="text-xl font-bold">FreeServer v3</a>
-                </motion.div>
-            </nav>
-        </header>
+                    <div className="py-4" />
+                    <h1 className="text-4xl md:text-7xl font-bold mb-4">贊助者名單</h1>
+                    <p className="text-xl mb-8">歡迎聯絡我們成為贊助者 {'<'}3</p>
+                    <Button
+                        className="bg-orange-500 hover:bg-orange-600 text-white text-lg px-8 py-3 rounded-full"
+                        onClick={() => router.push('/donate')}
+                    >
+                        贊助我們!
+                    </Button>
+                </motion.section>
 
-        <main className="container mx-auto pt-20 pb-20">
-            <motion.section
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-                className="text-center mb-16"
-            >
-                <div className="py-4" />
-                <h1 className="text-4xl md:text-7xl font-bold mb-4">贊助者名單</h1>
-                <p className="text-xl mb-8">歡迎聯絡我們成為贊助者 {'<'}3</p>
-                <Button
-                    className="bg-orange-500 hover:bg-orange-600 text-white text-lg px-8 py-3 rounded-full"
-                    onClick={() => router.push('/donate')}
+                {tiers.map(tier => (
+                    sponsorsByTier[tier] && sponsorsByTier[tier].length > 0 && (
+                        <TierSection key={tier} tier={tier} sponsors={sponsorsByTier[tier]} />
+                    )
+                ))}
+
+                <motion.section
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8 }}
+                    className="text-center mt-20"
                 >
-                    贊助我們!
-                </Button>
-            </motion.section>
+                    <h2 className="text-4xl font-bold mb-4">想要讓我們活更久嗎?</h2>
+                    <p className="text-xl mb-8">加入贊助者名單來幫助我們!</p>
+                    <Button
+                        className="bg-orange-500 hover:bg-orange-600 text-white text-lg px-8 py-3 rounded-full"
+                        onClick={() => router.push('/donate')}
+                    >
+                        <Gift className="mr-2 h-5 w-5" />
+                        贊助我們
+                    </Button>
+                </motion.section>
 
-            {tiers.map(tier => (
-                sponsorsByTier[tier] && sponsorsByTier[tier].length > 0 && (
-                    <TierSection key={tier} tier={tier} sponsors={sponsorsByTier[tier]} />
-                )
-            ))}
-
-            <motion.section
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-                className="text-center mt-20"
-            >
-                <h2 className="text-4xl font-bold mb-4">想要讓我們活更久嗎?</h2>
-                <p className="text-xl mb-8">加入贊助者名單來幫助我們!</p>
-                <Button
-                    className="bg-orange-500 hover:bg-orange-600 text-white text-lg px-8 py-3 rounded-full"
-                    onClick={() => router.push('/donate')}
+                <motion.section
+                    id="ADSponsor"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8 }}
+                    className="mt-20"
                 >
-                    <Gift className="mr-2 h-5 w-5" />
-                    贊助我們
-                </Button>
-            </motion.section>
-        </main>
+                    <h2 className="text-4xl font-bold mb-8 flex items-center justify-center text-blue-400">
+                        <AdCircle className="mr-2" /> 廣告贊助商
+                    </h2>
+                    {isLoading ? (
+                        <p className="text-center">Loading...</p>
+                    ) : ads && ads.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {ads.map((ad) => (
+                                <motion.div
+                                    key={ad.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.5 }}
+                                    className="bg-[#1B1B1F] p-6 rounded-lg shadow-lg hover:shadow-blue-500/20 transition-shadow duration-300"
+                                    onClick={() => window.open(ad.link, '_blank')}
+                                    style={{ cursor: 'pointer' }}
+                                >
+                                    <img src={ad.logo} alt={`${ad.name} logo`} className="w-full h-32 object-contain mb-4" />
+                                    <h3 className="text-2xl font-semibold mb-2 text-center">{ad.name}</h3>
+                                </motion.div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-center">No ads available at the moment.</p>
+                    )}
+                </motion.section>
+            </main>
 
-        <Footer />
+            <Footer />
         </div>
     );
 };

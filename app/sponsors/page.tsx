@@ -14,6 +14,13 @@ interface Sponsor {
     link: string;
 }
 
+interface Ad {
+    name: string;
+    url: string;
+    image: string;
+    text: string;
+}
+
 const initialSponsors: Sponsor[] = [
     { id: 1, name: 'NAF 商城', tier: 'Gold', logo: '/assets/sponsors/nafstore.webp', link: 'https://nafstore.net' },
     { id: 2, name: '四零四網路資訊企業社', tier: 'Gold', logo: '/assets/sponsors/404-network-infor.webp', link: 'https://host.moda/' },
@@ -46,7 +53,10 @@ const SponsorCard = ({ sponsor, index }: { sponsor: Sponsor, index: number }) =>
             </p>
         )}
         {sponsor.tier === 'Ad' && (
-            <p className="text-blue-400 font-medium text-center">廣告贊助商</p>
+            <>
+                <p className="text-blue-400 font-medium text-center mb-2">廣告贊助商</p>
+                <p className="text-sm text-center">{(sponsor as Sponsor & Ad).text}</p>
+            </>
         )}
     </motion.div>
 );
@@ -77,10 +87,14 @@ const SponsorsListPage = () => {
     useEffect(() => {
         fetch('https://cdn.freeserver.tw/ad/list.json')
             .then(response => response.json())
-            .then(data => {
-                const adSponsors = data.map((ad: any) => ({
-                    ...ad,
-                    tier: 'Ad'
+            .then((data: Ad[]) => {
+                const adSponsors = data.map((ad, index) => ({
+                    id: initialSponsors.length + index + 1,
+                    name: ad.name,
+                    tier: 'Ad',
+                    logo: ad.image,
+                    link: ad.url,
+                    text: ad.text
                 }));
                 setSponsors([...initialSponsors, ...adSponsors]);
                 setIsLoading(false);
